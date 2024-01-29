@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/user/update-user.dto';
-import { JwtGuard } from 'src/auth/guards/auth.guard';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get('all')
-  @UseGuards(JwtGuard)
+  @UseGuards(AuthGuard)
   findAll() {
     return this.userService.findAll();
   }
