@@ -6,18 +6,43 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Post } from './entities/post.entity';
 import { Comment } from './entities/comment.entity';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
+
+  private readonly s3Client = new S3Client({
+    region: this.configService.getOrThrow<string>('AWS_REGION'),
+    credentials: {
+      accessKeyId: this.configService.getOrThrow<string>('AWS_ACCESS_KEY_ID'),
+      secretAccessKey: this.configService.getOrThrow<string>('AWS_SECRET_ACCESS_KEY'),
+    }
+  })
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Post) private postRepository: Repository<Post>,
     @InjectRepository(Comment) private commentRepository: Repository<Comment>,
-  ) {}
+    private readonly configService: ConfigService,
+  ) { }
 
   create(createUserDto: CreateUserDto) {
     return this.userRepository.save(createUserDto);
+  }
+
+  async createPost(createPostDto: any, userId: number, originalname: string, buffer: Buffer) {
+    const uploadedFile = await this.s3Client.send(new PutObjectCommand({
+      Bucket: this.configService.getOrThrow<string>('AWS_BUCKET_NAME'),
+      Key: originalname,
+      Body: buffer,
+    }))
+    const cloudFrontUrl = await this.configService.getOrThrow<string>('CLOUD_FRONT');
+    return this.postRepository.save({
+      ...createPostDto,
+      image: `${cloudFrontUrl}/${originalname}`,
+      user: userId,
+    });
   }
 
   findAll() {
@@ -30,10 +55,6 @@ export class UserService {
     return this.userRepository.findOne({
       where: { email },
     });
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

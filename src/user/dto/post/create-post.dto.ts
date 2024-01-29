@@ -3,7 +3,7 @@ import { CreateUserDto } from "../user/create-user.dto";
 
 export class CreatePostDto {
     title: string;
-    image: string;
+    image?: string;
     likes?: number;
     dislikes?: number;
     user?: CreateUserDto;

@@ -6,9 +6,12 @@ import { User } from './entities/user.entity';
 import { Post } from './entities/post.entity';
 import { Comment } from './entities/comment.entity';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Post, Comment])],
+  imports: [
+    TypeOrmModule.forFeature([User, Post, Comment])
+  ],
   controllers: [UserController],
   providers: [UserService,JwtService],
 })
