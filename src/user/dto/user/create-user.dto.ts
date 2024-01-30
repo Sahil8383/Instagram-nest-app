@@ -1,3 +1,4 @@
+import { User } from "src/user/entities/user.entity";
 import { CreatePostDto } from "../post/create-post.dto";
 
 
@@ -6,7 +7,7 @@ export class CreateUserDto {
     email: string;
     password: string;
     avatar?: string;
-    followers?: number;
-    following?: number;
+    followers?: User[];
+    following?: User[];
     posts?: CreatePostDto[];
 }

@@ -22,13 +22,11 @@ export class UserController {
     return this.userService.createPost(createPostDto, req.user.id, file.originalname, file.buffer);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  
+  @Post('follow')
+  @UseGuards(AuthGuard)
+  following(@Body() body: any, @Req() req: any) {
+    return this.userService.following(req.user.id, body.followId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
-  }
 }

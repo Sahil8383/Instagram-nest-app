@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Post } from "./post.entity";
 
 @Entity()
@@ -18,11 +18,13 @@ export class User {
     @Column({ nullable: true })
     avatar: string;
 
-    @Column({ default: 0 })
-    followers: number;
+    @ManyToMany(() => User, user => user.followers)
+    @JoinTable()
+    following: User[];
 
-    @Column({ default: 0 })
-    following: number;
+    @ManyToMany(() => User, user => user.following)
+    @JoinTable()
+    followers: User[];
 
     @OneToMany(() => Post, post => post.user)
     posts: Post[];

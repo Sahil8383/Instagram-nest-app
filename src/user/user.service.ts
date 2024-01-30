@@ -47,7 +47,7 @@ export class UserService {
 
   findAll() {
     return this.userRepository.find({
-      relations: ['posts'],
+      relations: ['posts', 'followers', 'following'],
     })
   }
 
@@ -57,11 +57,23 @@ export class UserService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async following(id: number, followId: number) {
+    const followUser = await this.userRepository.findOne({
+      where: { id: followId },
+      relations: ['followers'],
+    });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['following'],
+    });
+    
+    user.following.push(followUser);
+    await this.userRepository.save(user);
+    
+    followUser.followers.push(user);
+    await this.userRepository.save(followUser);
+
+    return { message: 'Followed' };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
-  }
 }
