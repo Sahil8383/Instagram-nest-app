@@ -57,22 +57,26 @@ export class UserService {
     });
   }
 
-  async following(id: number, followId: number) {
-    const followUser = await this.userRepository.findOne({
-      where: { id: followId },
-      relations: ['followers'],
+  profile(id: number) {
+    return this.userRepository.findOne({
+      where: { id },
+      relations: ['posts', 'followers', 'following'],
     });
+  }
+
+  async following(id: number, followId: number) {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['following'],
+    });
+
+    const followUser = await this.userRepository.findOne({
+      where: { id: followId },
     });
     
     user.following.push(followUser);
     await this.userRepository.save(user);
     
-    followUser.followers.push(user);
-    await this.userRepository.save(followUser);
-
     return { message: 'Followed' };
   }
 

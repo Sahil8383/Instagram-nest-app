@@ -22,11 +22,18 @@ export class UserController {
     return this.userService.createPost(createPostDto, req.user.id, file.originalname, file.buffer);
   }
 
+  @Get('profile')
+  @UseGuards(AuthGuard)
+  profile(@Req() req: any) {
+    return this.userService.profile(req.user.id);
+  }
   
   @Post('follow')
   @UseGuards(AuthGuard)
   following(@Body() body: any, @Req() req: any) {
     return this.userService.following(req.user.id, body.followId);
   }
+
+
 
 }
