@@ -47,7 +47,7 @@ export class UserService {
 
   findAll() {
     return this.userRepository.find({
-      relations: ['posts', 'followers', 'following'],
+      relations: ['posts'],
     })
   }
 
@@ -60,24 +60,27 @@ export class UserService {
   profile(id: number) {
     return this.userRepository.findOne({
       where: { id },
-      relations: ['posts', 'followers', 'following'],
+      relations: ['posts'],
     });
   }
 
   async following(id: number, followId: number) {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['following'],
     });
-
-    const followUser = await this.userRepository.findOne({
+    const follow = await this.userRepository.findOne({
       where: { id: followId },
     });
-    
-    user.following.push(followUser);
+
+    user.following.push(followId);
+    follow.followers.push(id);
+
     await this.userRepository.save(user);
-    
-    return { message: 'Followed' };
+    await this.userRepository.save(follow);
+
+    return { 
+      user, follow
+    };
   }
 
 }

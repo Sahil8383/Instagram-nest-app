@@ -7,7 +7,7 @@ export class CreateUserDto {
     email: string;
     password: string;
     avatar?: string;
-    followers?: User[];
-    following?: User[];
+    followers?: number[];
+    following?: number[];
     posts?: CreatePostDto[];
 }

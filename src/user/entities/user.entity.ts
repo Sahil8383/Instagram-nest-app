@@ -18,14 +18,12 @@ export class User {
     @Column({ nullable: true })
     avatar: string;
 
-    @ManyToMany(() => User, user => user.followers)
-    @JoinTable()
-    following: User[];
+    @Column({ type: 'simple-array', default: [] })
+    followers: number[];
 
-    @ManyToMany(() => User, user => user.following)
-    @JoinTable()
-    followers: User[];
-
+    @Column({ type: 'simple-array', default: [] })
+    following: number[];
+    
     @OneToMany(() => Post, post => post.user)
     posts: Post[];
 }
