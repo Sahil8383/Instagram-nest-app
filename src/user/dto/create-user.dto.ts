@@ -1,4 +1,4 @@
-import { CreatePostDto } from "../post/create-post.dto";
+import { CreatePostDto } from "../../post/dto/post/create-post.dto";
 
 export class CreateUserDto {
     name: string;

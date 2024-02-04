@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UserController } from './user.controller';
+import { PostController } from './post.controller';
+import { PostService } from './post.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { Post } from './entities/post.entity';
 import { Comment } from './entities/comment.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
   imports: [
     TypeOrmModule.forFeature([User, Post, Comment])
   ],
-  controllers: [UserController],
-  providers: [UserService,JwtService],
+  controllers: [PostController],
+  providers: [PostService, JwtService]
 })
-export class UserModule {}
+export class PostModule {}

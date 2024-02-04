@@ -1,5 +1,5 @@
 import { CreatePostDto } from "../post/create-post.dto";
-import { CreateUserDto } from "../user/create-user.dto";
+import { CreateUserDto } from "../../../user/dto/create-user.dto";
 
 
 export class CreateCommentDto {

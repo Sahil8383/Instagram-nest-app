@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/user/create-user.dto';
-import { UpdateUserDto } from './dto/user/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
@@ -22,8 +22,6 @@ export class UserService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    @InjectRepository(Post) private postRepository: Repository<Post>,
-    @InjectRepository(Comment) private commentRepository: Repository<Comment>,
     private readonly configService: ConfigService,
   ) { }
 
@@ -36,19 +34,19 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async createPost(createPostDto: any, userId: number, originalname: string, buffer: Buffer) {
-    const uploadedFile = await this.s3Client.send(new PutObjectCommand({
-      Bucket: this.configService.getOrThrow<string>('AWS_BUCKET_NAME'),
-      Key: originalname,
-      Body: buffer,
-    }))
-    const cloudFrontUrl = await this.configService.getOrThrow<string>('CLOUD_FRONT');
-    return this.postRepository.save({
-      ...createPostDto,
-      image: `${cloudFrontUrl}/${originalname}`,
-      user: userId,
-    });
-  }
+  // async createPost(createPostDto: any, userId: number, originalname: string, buffer: Buffer) {
+  //   const uploadedFile = await this.s3Client.send(new PutObjectCommand({
+  //     Bucket: this.configService.getOrThrow<string>('AWS_BUCKET_NAME'),
+  //     Key: originalname,
+  //     Body: buffer,
+  //   }))
+  //   const cloudFrontUrl = await this.configService.getOrThrow<string>('CLOUD_FRONT');
+  //   return this.postRepository.save({
+  //     ...createPostDto,
+  //     image: `${cloudFrontUrl}/${originalname}`,
+  //     user: userId,
+  //   });
+  // }
 
   findAll() {
     return this.userRepository.find({
