@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/user/create-user.dto';
 import { UpdateUserDto } from './dto/user/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -28,7 +28,12 @@ export class UserService {
   ) { }
 
   create(createUserDto: CreateUserDto) {
-    return this.userRepository.save(createUserDto);
+    const user = this.userRepository.create({
+      ...createUserDto,
+      followers: [],
+      following: [],
+    });
+    return this.userRepository.save(user);
   }
 
   async createPost(createPostDto: any, userId: number, originalname: string, buffer: Buffer) {
@@ -57,14 +62,14 @@ export class UserService {
     });
   }
 
-  profile(id: number) {
+  profile(id: string) {
     return this.userRepository.findOne({
       where: { id },
       relations: ['posts'],
     });
   }
 
-  async following(id: number, followId: number) {
+  async following(id: string, followId: string) {
     const user = await this.userRepository.findOne({
       where: { id },
     });
@@ -78,9 +83,30 @@ export class UserService {
     await this.userRepository.save(user);
     await this.userRepository.save(follow);
 
-    return { 
+    return {
       user, follow
     };
+  }
+
+  async unFollowing(id: string, unfollowId: string) {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { id },
+      });
+      const follow = await this.userRepository.findOneOrFail({
+        where: { id: unfollowId },
+      });
+
+      user.following = user.following.filter((id) => id !== unfollowId);
+      follow.followers = follow.followers.filter((id) => id !== id);
+      
+      await this.userRepository.save(user);
+      await this.userRepository.save(follow);
+
+      return { user, follow };
+    } catch (error) {
+      throw new NotFoundException('User not found');
+    }
   }
 
 }

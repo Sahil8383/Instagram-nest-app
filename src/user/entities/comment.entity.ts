@@ -5,7 +5,7 @@ import { Post } from "./post.entity";
 @Entity()
 export class Comment {
     @PrimaryGeneratedColumn()
-    id: number;
+    id: string;
     
     @Column()
     content: string;
