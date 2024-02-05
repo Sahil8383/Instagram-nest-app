@@ -5,6 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostModule } from './post/post.module';
 import { EmailModule } from './email/email.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { EmailModule } from './email/email.module';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
       }),
     }),
-
+    EventEmitterModule.forRoot(),
     UserModule, 
     AuthModule, PostModule, EmailModule
   ],

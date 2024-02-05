@@ -34,7 +34,6 @@ export class UserService {
       following: [],
     });
 
-    await this.emailService.welcomeEmail(createUserDto);
     return this.userRepository.save(user);
   }
 
