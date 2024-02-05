@@ -28,15 +28,14 @@ export class UserService {
   ) { }
 
   async create(createUserDto: CreateUserDto) {
-    // const user = this.userRepository.create({
-    //   ...createUserDto,
-    //   followers: [],
-    //   following: [],
-    // });
+    const user = this.userRepository.create({
+      ...createUserDto,
+      followers: [],
+      following: [],
+    });
 
     await this.emailService.welcomeEmail(createUserDto);
-    return 'Email sent successfully!' 
-    // return this.userRepository.save(user);
+    return this.userRepository.save(user);
   }
 
   // async createPost(createPostDto: any, userId: number, originalname: string, buffer: Buffer) {
