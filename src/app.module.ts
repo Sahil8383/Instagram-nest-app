@@ -4,6 +4,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostModule } from './post/post.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { PostModule } from './post/post.module';
     }),
 
     UserModule, 
-    AuthModule, PostModule
+    AuthModule, PostModule, EmailModule
   ],
 })
 export class AppModule {}

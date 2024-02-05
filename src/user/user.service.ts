@@ -8,6 +8,7 @@ import { Post } from './entities/post.entity';
 import { Comment } from './entities/comment.entity';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { ConfigService } from '@nestjs/config';
+import { EmailService } from 'src/email/email.service';
 
 @Injectable()
 export class UserService {
@@ -23,15 +24,19 @@ export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly configService: ConfigService,
+    private readonly emailService: EmailService
   ) { }
 
-  create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create({
-      ...createUserDto,
-      followers: [],
-      following: [],
-    });
-    return this.userRepository.save(user);
+  async create(createUserDto: CreateUserDto) {
+    // const user = this.userRepository.create({
+    //   ...createUserDto,
+    //   followers: [],
+    //   following: [],
+    // });
+
+    await this.emailService.welcomeEmail(createUserDto);
+    return 'Email sent successfully!' 
+    // return this.userRepository.save(user);
   }
 
   // async createPost(createPostDto: any, userId: number, originalname: string, buffer: Buffer) {
