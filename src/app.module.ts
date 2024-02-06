@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostModule } from './post/post.module';
 import { EmailModule } from './email/email.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     }),
     EventEmitterModule.forRoot(),
     UserModule, 
-    AuthModule, PostModule, EmailModule
+    AuthModule, PostModule, EmailModule, CloudinaryModule
   ],
 })
 export class AppModule {}

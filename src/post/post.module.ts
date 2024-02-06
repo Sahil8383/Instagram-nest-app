@@ -6,12 +6,14 @@ import { User } from '../user/entities/user.entity';
 import { Post } from './entities/post.entity';
 import { Comment } from './entities/comment.entity';
 import { JwtService } from '@nestjs/jwt';
+import { Cloudinary } from 'src/cloudinary/cloudinary'; 
+
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, Post, Comment])
   ],
   controllers: [PostController],
-  providers: [PostService, JwtService]
+  providers: [PostService, JwtService, Cloudinary]
 })
 export class PostModule {}

@@ -6,10 +6,10 @@ import { PostService } from './post.service';
 
 @Controller('post')
 export class PostController {
+    
     constructor(
         private readonly postService: PostService
     ) {}
-
 
     @Post('create')
     @UseGuards(AuthGuard)
@@ -19,6 +19,6 @@ export class PostController {
         @Body() createPostDto: CreatePostDto, 
         @Req() req: any
     ){
-        return this.postService.createPost(createPostDto, req.user.id, file.originalname, file.buffer);
+        return this.postService.createPost(createPostDto, req.user.id, file);
     }
 }
