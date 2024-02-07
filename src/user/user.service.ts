@@ -3,14 +3,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
-import { ConfigService } from '@nestjs/config';
-import { EmailService } from 'src/email/email.service';
+import { Post } from 'src/post/entities/post.entity';
 
 @Injectable()
 export class UserService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    @InjectRepository(Post) private postRepository: Repository<Post>,
   ) { }
 
   async create(createUserDto: CreateUserDto) {
@@ -35,12 +35,44 @@ export class UserService {
     });
   }
 
-  profile(id: string) {
-    return this.userRepository.findOne({
+  async profile(id: string) {
+
+    const user = await this.userRepository.findOne({
       where: { id },
       relations: ['posts'],
     });
+
+    return {
+      ...user,
+      followers: user.followers.length,
+      following: user.following.length,
+    };
   }
+
+  async feed(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    const followingArray = user.following;
+    const posts = await this.userRepository.createQueryBuilder('user')
+      .leftJoinAndSelect('user.posts', 'post')
+      .where('user.id IN (:...ids)', { ids: followingArray })
+      .getMany();
+
+    return posts;
+  }
+
+  async randomFeed() {
+    
+    const posts = await this.postRepository.createQueryBuilder('post')
+      .orderBy("RANDOM()")
+      .limit(10)
+      .getMany();
+
+    return posts;
+  }
+
 
   async following(id: string, followId: string) {
     const user = await this.userRepository.findOne({
@@ -80,20 +112,6 @@ export class UserService {
     } catch (error) {
       throw new NotFoundException('User not found');
     }
-  }
-
-  async feed(id: string) {
-    const user = await this.userRepository.findOne({
-      where: { id },
-    });
-
-    const followingArray = user.following;
-    const posts = await this.userRepository.createQueryBuilder('user')
-      .leftJoinAndSelect('user.posts', 'post')
-      .where('user.id IN (:...ids)', { ids: followingArray })
-      .getMany();
-
-    return posts;
   }
 
 }

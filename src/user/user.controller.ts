@@ -35,4 +35,11 @@ export class UserController {
   feed(@Req() req: any) {
     return this.userService.feed(req.user.id);
   }
+
+  @Get('/search/feed')
+  @UseGuards(AuthGuard)
+  seacrhFeed(@Req() req: any) {
+    return this.userService.randomFeed();
+  }
+  
 }

@@ -4,8 +4,8 @@ import { AuthService } from './auth.service';
 import { UserService } from 'src/user/user.service';
 import { User } from 'src/user/entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Post } from 'src/user/entities/post.entity';
-import { Comment } from 'src/user/entities/comment.entity';
+import { Post } from 'src/post/entities/post.entity';
+import { Comment } from 'src/post/entities/comment.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { EmailService } from 'src/email/email.service';
 
