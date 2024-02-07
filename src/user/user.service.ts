@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Post } from 'src/post/entities/post.entity';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+
 
 @Injectable()
 export class UserService {
@@ -11,6 +14,7 @@ export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Post) private postRepository: Repository<Post>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) { }
 
   async create(createUserDto: CreateUserDto) {
@@ -36,7 +40,6 @@ export class UserService {
   }
 
   async profile(id: string) {
-
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['posts'],
