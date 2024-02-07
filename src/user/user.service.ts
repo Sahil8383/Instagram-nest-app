@@ -11,8 +11,6 @@ export class UserService {
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private readonly configService: ConfigService,
-    private readonly emailService: EmailService
   ) { }
 
   async create(createUserDto: CreateUserDto) {
@@ -74,7 +72,7 @@ export class UserService {
 
       user.following = user.following.filter((id) => id !== unfollowId);
       follow.followers = follow.followers.filter((id) => id !== id);
-      
+
       await this.userRepository.save(user);
       await this.userRepository.save(follow);
 
@@ -82,6 +80,20 @@ export class UserService {
     } catch (error) {
       throw new NotFoundException('User not found');
     }
+  }
+
+  async feed(id: string) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+    });
+
+    const followingArray = user.following;
+    const posts = await this.userRepository.createQueryBuilder('user')
+      .leftJoinAndSelect('user.posts', 'post')
+      .where('user.id IN (:...ids)', { ids: followingArray })
+      .getMany();
+
+    return posts;
   }
 
 }
