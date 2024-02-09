@@ -16,9 +16,9 @@ import * as redisStore from 'cache-manager-redis-store';
 
     CacheModule.register({
       isGlobal: true,
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
+      // store: redisStore,
+      // host: 'localhost',
+      // port: 6379,
     }),
 
     TypeOrmModule.forRootAsync({
@@ -31,6 +31,7 @@ import * as redisStore from 'cache-manager-redis-store';
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
       }),
     }),
+
     EventEmitterModule.forRoot(),
     UserModule, 
     AuthModule, PostModule, EmailModule, CloudinaryModule
