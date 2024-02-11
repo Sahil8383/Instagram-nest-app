@@ -1,12 +1,38 @@
-services:
-  redis:
-    container_name: cache
-    image: redis
-    ports:
-      - 6379:6379
-    volumes:
-      - redis:/data
+version: '3'
 
-volumes:
+services:
+  # PostgreSQL database
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '5433:5432'
+    networks:
+      - app-network
+
+  # Redis server
   redis:
-    driver: local
+    image: 'redis:latest'
+    ports:
+      - '6380:6379'
+    networks:
+      - app-network
+
+  # Nest application
+  app:
+    build: .
+    command: npm run start:prod
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
